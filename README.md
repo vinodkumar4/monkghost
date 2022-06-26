@@ -1,0 +1,1 @@
+Ghost setup using monk

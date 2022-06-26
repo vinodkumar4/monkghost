@@ -1,0 +1,61 @@
+namespace: monkghost
+ghostmonk:
+  defines: runnable
+  containers:
+    defines: containers
+    ghostmonk:
+      image:  ghost
+      image-tag: latest
+      environment:
+        - <- `database__client=${db-client}`
+        - <- `database__connection__host=${db-host}`
+        - <- `database__connection__user=${db-user}`
+        - <- `database__connection__database=${db-name}`
+        - <- `database__connection__password=${db-password}`
+        - <- `url=${GHOST_SITEURL}`
+        - <- `NODE_ENV=${node_env}`
+      paths:
+        - <- `${monk-volume-path}/${MONKGHOST_DATA_PATH}:/var/lib/ghost/content`
+      ports:
+        - <- `0.0.0.0:8285:2368`
+  depends:
+    wait-for:
+      runnables:
+        - monkghost/mydb
+      timeout: 30
+  variables:
+    defines: variables
+    TZ:
+      env: TZ
+      type: string
+      value: "UTC"
+    db-client:
+      type: string
+      value: "mysql"
+    db-user:
+      type: string
+      value: "root"
+    db-root-password:
+      type: string
+      value: "password"
+    db-password:
+      type: string
+      value: "password"
+    db-name:
+      type: string
+      value: "ghostdb"
+    db-host:
+      type: string
+      value: <- get-hostname("monkghost/mydb", "mydb")
+    monk-volume-path:
+      type: string
+      value: "/var"
+    MONKGHOST_DATA_PATH:
+      type: string
+      value: "ghost/data/content"
+    GHOST_SITEURL:
+      type: string
+      value: "http://localhost:8285"
+    node_env:
+      type: string
+      value: "dev"

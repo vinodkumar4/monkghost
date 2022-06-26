@@ -1,0 +1,43 @@
+namespace: monkghost
+
+mydb:
+  defines: runnable
+  metadata:
+    name: MySQL
+    description: MySQL Database
+  containers:
+    defines: containers
+    mydb:
+      image: mysql
+      image-tag: <- `${image-tag}`
+      ports:
+        - <- `0.0.0.0:${db-port}:3306`
+      environment:
+        - <- `MYSQL_ROOT_PASSWORD=${db-root-password}`
+        - <- `MYSQL_USER=${db-user}`
+        - <- `MYSQL_DATABASE=${db-name}`
+        - <- `MYSQL_PASSWORD=${db-password}`
+      paths:
+        - <- `${db-volume-path}/data/db:/var/lib/mysql`
+  variables:
+    image-tag:
+      type: string
+      value: latest
+    db-root-password:
+      type: string
+      value: password
+    db-password:
+      type: string
+      value: password
+    db-user:
+      type: string
+      value: myghost
+    db-name:
+      type: string
+      value: ghost
+    db-port:
+      type: int
+      value: 13928
+    db-volume-path:
+      type: string
+      value: "/var"
