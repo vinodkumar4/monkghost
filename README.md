@@ -1,1 +1,1 @@
-Ghost setup using monk
+# monkghost
